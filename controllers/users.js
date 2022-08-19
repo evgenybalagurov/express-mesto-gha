@@ -19,3 +19,21 @@ module.exports.createUser = (req, res) => {
     .then((user) => res.send({ user }))
     .catch((err) => res.status(500).send({ message: err.message }));
 };
+
+module.exports.updateProfile = (req, res) => {
+  const { name, about } = req.body;
+  const userId = req.user._id;
+
+  User.findByIdAndUpdate(userId, { name, about })
+    .than((user) => res.send({ user }))
+    .catch((err) => res.status(500).send({ message: err.message }));
+};
+
+module.exports.updateAvatar = (req, res) => {
+  const { avatar } = req.body;
+  const userId = req.user._id;
+
+  User.findByIdAndUpdate(userId, { avatar })
+    .then((user) => res.send({ user }))
+    .catch((err) => res.status(500).send({ message: err.message }));
+};
