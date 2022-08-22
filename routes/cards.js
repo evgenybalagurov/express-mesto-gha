@@ -1,4 +1,3 @@
-const express = require('express');
 const router = require('express').Router();
 const {
   getCards,
@@ -9,7 +8,7 @@ const {
 } = require('../controllers/cards');
 
 router.get('/', getCards);
-router.post('/', express.json(), createCard);
+router.post('/', createCard);
 router.delete('/:cardId', deleteCard);
 router.put('/:cardId/likes', likeCard);
 router.delete('/:cardId/likes', dislikeCard);

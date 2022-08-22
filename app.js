@@ -24,11 +24,13 @@ connect();
 
 app.use((req, res, next) => {
   req.user = {
-    _id: '62ff379803eee79221a77512',
+    _id: '6302157849e41ed41901507d',
   };
 
   next();
 });
+
+app.use(express.json());
 
 app.use('/users', require('./routes/users'));
 app.use('/cards', require('./routes/cards'));
