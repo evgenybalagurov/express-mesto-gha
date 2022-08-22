@@ -21,7 +21,7 @@ const createCard = async (req, res) => {
     return res.status(201).send(card);
   } catch (err) {
     if (err.name === 'ValidationError') {
-      return res.status(ERROR_DATA_CODE).send({ message: 'Incorrect data was passed during user creation' });
+      return res.status(ERROR_DATA_CODE).send({ message: 'Validation error. Incorrect data sent' });
     }
     return res.status(ERROR_CODE).send({ message: 'An error has occurred on the server' });
   }

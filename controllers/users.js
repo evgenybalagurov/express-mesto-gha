@@ -37,7 +37,7 @@ const createUser = async (req, res) => {
     return res.status(201).send(user);
   } catch (err) {
     if (err.name === 'ValidationError') {
-      return res.status(ERROR_DATA_CODE).send({ message: 'Incorrect data passed during user creation' });
+      return res.status(ERROR_DATA_CODE).send({ message: 'Validation error. Incorrect data sent' });
     }
     return res.status(ERROR_CODE).send({ message: 'An error has occurred on the server' });
   }
@@ -53,10 +53,10 @@ const updateProfile = async (req, res) => {
     return res.status(200).send(user);
   } catch (err) {
     if (err.name === 'CastError') {
-      return res.status(ERROR_DATA_CODE).send({ message: 'The user with the specified _id was not found' });
+      return res.status(ERROR_DATA_CODE).send({ message: 'Invalid user id' });
     }
     if (err.name === 'ValidationError') {
-      return res.status(ERROR_DATA_CODE).send({ message: 'Invalid data passed when updating profile' });
+      return res.status(ERROR_DATA_CODE).send({ message: 'Validation error. Incorrect data sent' });
     }
     return res.status(ERROR_CODE).send({ message: 'An error has occurred on the server' });
   }
@@ -72,10 +72,10 @@ const updateAvatar = async (req, res) => {
     return res.status(200).send(user);
   } catch (err) {
     if (err.name === 'CastError') {
-      return res.status(ERROR_DATA_CODE).send({ message: 'The user with the specified _id was not found' });
+      return res.status(ERROR_DATA_CODE).send({ message: 'Invalid user id' });
     }
     if (err.name === 'ValidationError') {
-      return res.status(ERROR_DATA_CODE).send({ message: 'Incorrect data passed when updating avatar' });
+      return res.status(ERROR_DATA_CODE).send({ message: 'Validation error. Incorrect data sent' });
     }
     return res.status(ERROR_CODE).send({ message: 'An error has occurred on the server' });
   }
