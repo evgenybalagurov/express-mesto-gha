@@ -15,8 +15,8 @@ const connect = async () => {
 
     await app.listen(PORT);
     console.log(`App listening on port ${PORT}`);
-  } catch (e) {
-    console.log('Filed to connect:', e.message);
+  } catch (err) {
+    console.log('Filed to connect:', err.message);
   }
 };
 
