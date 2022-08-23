@@ -1,6 +1,6 @@
 const User = require('../models/user');
 const {
-  ERROR_CODE,
+  ERROR_SERVER_CODE,
   ERROR_DATA_CODE,
   NOT_FOUND_CODE,
 } = require('../constants/constants');
@@ -10,7 +10,7 @@ const getUsers = async (req, res) => {
     const users = await User.find({});
     return res.status(200).send(users);
   } catch (err) {
-    return res.status(ERROR_CODE).send({ message: 'An error has occurred on the server' });
+    return res.status(ERROR_SERVER_CODE).send({ message: 'An error has occurred on the server' });
   }
 };
 
@@ -26,7 +26,7 @@ const getUserById = async (req, res) => {
     if (err.name === 'CastError') {
       return res.status(ERROR_DATA_CODE).send({ message: 'Invalid user id' });
     }
-    return res.status(ERROR_CODE).send({ message: 'An error has occurred on the server' });
+    return res.status(ERROR_SERVER_CODE).send({ message: 'An error has occurred on the server' });
   }
 };
 
@@ -39,7 +39,7 @@ const createUser = async (req, res) => {
     if (err.name === 'ValidationError') {
       return res.status(ERROR_DATA_CODE).send({ message: 'Validation error. Incorrect data sent' });
     }
-    return res.status(ERROR_CODE).send({ message: 'An error has occurred on the server' });
+    return res.status(ERROR_SERVER_CODE).send({ message: 'An error has occurred on the server' });
   }
 };
 
@@ -50,6 +50,9 @@ const updateProfile = async (req, res) => {
       new: true,
       runValidators: true,
     });
+    if (!user) {
+      return res.status(NOT_FOUND_CODE).send({ message: 'This user does not exist' });
+    }
     return res.status(200).send(user);
   } catch (err) {
     if (err.name === 'CastError') {
@@ -58,7 +61,7 @@ const updateProfile = async (req, res) => {
     if (err.name === 'ValidationError') {
       return res.status(ERROR_DATA_CODE).send({ message: 'Validation error. Incorrect data sent' });
     }
-    return res.status(ERROR_CODE).send({ message: 'An error has occurred on the server' });
+    return res.status(ERROR_SERVER_CODE).send({ message: 'An error has occurred on the server' });
   }
 };
 
@@ -69,6 +72,9 @@ const updateAvatar = async (req, res) => {
       new: true,
       runValidators: true,
     });
+    if (!user) {
+      return res.status(NOT_FOUND_CODE).send({ message: 'This user does not exist' });
+    }
     return res.status(200).send(user);
   } catch (err) {
     if (err.name === 'CastError') {
@@ -77,7 +83,7 @@ const updateAvatar = async (req, res) => {
     if (err.name === 'ValidationError') {
       return res.status(ERROR_DATA_CODE).send({ message: 'Validation error. Incorrect data sent' });
     }
-    return res.status(ERROR_CODE).send({ message: 'An error has occurred on the server' });
+    return res.status(ERROR_SERVER_CODE).send({ message: 'An error has occurred on the server' });
   }
 };
 

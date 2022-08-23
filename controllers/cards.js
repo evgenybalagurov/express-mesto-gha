@@ -1,6 +1,6 @@
 const Card = require('../models/card');
 const {
-  ERROR_CODE,
+  ERROR_SERVER_CODE,
   ERROR_DATA_CODE,
   NOT_FOUND_CODE,
 } = require('../constants/constants');
@@ -10,7 +10,7 @@ const getCards = async (req, res) => {
     const cards = await Card.find({}).populate('likes');
     return res.status(200).send(cards);
   } catch (err) {
-    return res.status(ERROR_CODE).send({ message: 'An error has occurred on the server' });
+    return res.status(ERROR_SERVER_CODE).send({ message: 'An error has occurred on the server' });
   }
 };
 
@@ -23,7 +23,7 @@ const createCard = async (req, res) => {
     if (err.name === 'ValidationError') {
       return res.status(ERROR_DATA_CODE).send({ message: 'Validation error. Incorrect data sent' });
     }
-    return res.status(ERROR_CODE).send({ message: 'An error has occurred on the server' });
+    return res.status(ERROR_SERVER_CODE).send({ message: 'An error has occurred on the server' });
   }
 };
 
@@ -38,7 +38,7 @@ const deleteCard = async (req, res) => {
     if (err.name === 'CastError') {
       return res.status(ERROR_DATA_CODE).send({ message: 'Invalid card id' });
     }
-    return res.status(ERROR_CODE).send({ message: 'An error has occurred on the server' });
+    return res.status(ERROR_SERVER_CODE).send({ message: 'An error has occurred on the server' });
   }
 };
 
@@ -57,7 +57,7 @@ const likeCard = async (req, res) => {
     if (err.name === 'CastError') {
       return res.status(ERROR_DATA_CODE).send({ message: 'Invalid card id' });
     }
-    return res.status(ERROR_CODE).send({ message: 'An error has occurred on the server' });
+    return res.status(ERROR_SERVER_CODE).send({ message: 'An error has occurred on the server' });
   }
 };
 
@@ -76,7 +76,7 @@ const dislikeCard = async (req, res) => {
     if (err.name === 'CastError') {
       return res.status(ERROR_DATA_CODE).send({ message: 'Invalid card id' });
     }
-    return res.status(ERROR_CODE).send({ message: 'An error has occurred on the server' });
+    return res.status(ERROR_SERVER_CODE).send({ message: 'An error has occurred on the server' });
   }
 };
 
