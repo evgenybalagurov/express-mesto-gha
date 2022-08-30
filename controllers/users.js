@@ -33,13 +33,12 @@ const getUserById = async (req, res) => {
 
 const createUser = async (req, res) => {
   try {
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+    const {
+      name, about, avatar, email, password,
+    } = req.body;
+    const hashedPassword = await bcrypt.hash(password, 10);
     const user = await User.create({
-      name: req.body.name,
-      about: req.body.about,
-      avatar: req.body.avatar,
-      email: req.body.email,
-      password: hashedPassword,
+      name, about, avatar, email, password: hashedPassword,
     });
     return res.status(201).send(user);
   } catch (err) {

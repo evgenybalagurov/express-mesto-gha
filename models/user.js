@@ -23,7 +23,7 @@ const userSchema = new mongoose.Schema({
     required: true,
     unique: true,
     validate: {
-      validator: validator.isEmail(),
+      validator: (email) => validator.isEmail(email),
       message: 'Please enter a valid email',
     },
   },
