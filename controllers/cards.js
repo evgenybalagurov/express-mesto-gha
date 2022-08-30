@@ -28,11 +28,17 @@ const createCard = async (req, res) => {
 };
 
 const deleteCard = async (req, res) => {
+  const { cardId } = req.params;
+
   try {
-    const card = await Card.findByIdAndRemove(req.params.cardId);
+    const card = await Card.findById(cardId);
     if (!card) {
       return res.status(NOT_FOUND_CODE).send({ message: 'This card does not exist' });
     }
+    if (req.user._id !== card.owner.toString()) {
+      return res.status(401).send({ message: 'This card is another user' });
+    }
+    card.remove();
     return res.status(200).send(card);
   } catch (err) {
     if (err.name === 'CastError') {
