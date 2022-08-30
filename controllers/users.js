@@ -39,6 +39,22 @@ const getUsers = async (req, res) => {
   }
 };
 
+const getCurrentUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return res.status(NOT_FOUND_CODE).send({ message: 'This user does not exist' });
+    }
+    return res.status(200).send(user);
+  } catch (err) {
+    if (err.name === 'CastError') {
+      return res.status(ERROR_DATA_CODE).send({ message: 'Invalid user id' });
+    }
+    return res.status(ERROR_SERVER_CODE).send({ message: 'An error has occurred on the server' });
+  }
+};
+
 const getUserById = async (req, res) => {
   try {
     const user = await User.findById(req.params.userId);
@@ -121,6 +137,7 @@ const updateAvatar = async (req, res) => {
 module.exports = {
   login,
   getUsers,
+  getCurrentUser,
   getUserById,
   createUser,
   updateProfile,
