@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const { login, createUser } = require('./controllers/users');
 const { NOT_FOUND_CODE } = require('./constants/constants');
 
 const { PORT = 3000 } = process.env;
@@ -32,6 +33,9 @@ app.use((req, res, next) => {
 });
 
 app.use(express.json());
+
+app.use('/signin', login);
+app.use('/signup', createUser);
 
 app.use('/users', require('./routes/users'));
 app.use('/cards', require('./routes/cards'));
