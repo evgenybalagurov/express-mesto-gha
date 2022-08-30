@@ -1,10 +1,34 @@
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const {
   ERROR_SERVER_CODE,
   ERROR_DATA_CODE,
   NOT_FOUND_CODE,
 } = require('../constants/constants');
+
+const login = async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(401).send({ message: 'Incorrect email or password' });
+    }
+
+    const matchedPasswords = await bcrypt.compare(password, user.password);
+
+    if (!matchedPasswords) {
+      return res.status(401).send({ message: 'Incorrect email or password' });
+    }
+
+    return res.status(200).send({
+      token: jwt.sign({ _id: user._id }, 'super-strong-secret', { expiresIn: '7d' }),
+    });
+  } catch (err) {
+    return res.status(ERROR_SERVER_CODE).send({ message: 'An error has occurred on the server' });
+  }
+};
 
 const getUsers = async (req, res) => {
   try {
@@ -32,10 +56,11 @@ const getUserById = async (req, res) => {
 };
 
 const createUser = async (req, res) => {
+  const {
+    name, about, avatar, email, password,
+  } = req.body;
+
   try {
-    const {
-      name, about, avatar, email, password,
-    } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await User.create({
       name, about, avatar, email, password: hashedPassword,
@@ -94,6 +119,7 @@ const updateAvatar = async (req, res) => {
 };
 
 module.exports = {
+  login,
   getUsers,
   getUserById,
   createUser,
