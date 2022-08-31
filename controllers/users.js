@@ -5,7 +5,7 @@ const { ValidationError } = require('../error/ValidationError');
 const { CastError } = require('../error/CastError');
 const { NotFoundError } = require('../error/NotFoundError');
 const { AuthorizationError } = require('../error/AuthorizationError');
-const { ConflictError } = require('../error/AuthorizationError');
+const { ConflictError } = require('../error/ConflictError');
 
 const login = async (req, res, next) => {
   const { email, password } = req.body;
