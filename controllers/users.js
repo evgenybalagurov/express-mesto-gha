@@ -1,96 +1,99 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
-const {
-  ERROR_SERVER_CODE,
-  ERROR_DATA_CODE,
-  NOT_FOUND_CODE,
-} = require('../constants/constants');
+const { ValidationError } = require('../error/ValidationError');
+const { CastError } = require('../error/CastError');
+const { NotFoundError } = require('../error/NotFoundError');
+const { AuthorizationError } = require('../error/AuthorizationError');
+const { ConflictError } = require('../error/AuthorizationError');
 
-const login = async (req, res) => {
+const login = async (req, res, next) => {
   const { email, password } = req.body;
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).select('+password');
 
     if (!user) {
-      return res.status(401).send({ message: 'Incorrect email or password' });
+      return next(new AuthorizationError('Incorrect email or password'));
     }
 
     const matchedPasswords = await bcrypt.compare(password, user.password);
 
     if (!matchedPasswords) {
-      return res.status(401).send({ message: 'Incorrect email or password' });
+      return next(new AuthorizationError('Incorrect email or password'));
     }
 
     return res.status(200).send({
       token: jwt.sign({ _id: user._id }, 'super-strong-secret', { expiresIn: '7d' }),
     });
   } catch (err) {
-    return res.status(ERROR_SERVER_CODE).send({ message: 'An error has occurred on the server' });
+    return next(err);
   }
 };
 
-const getUsers = async (req, res) => {
+const getUsers = async (req, res, next) => {
   try {
     const users = await User.find({});
     return res.status(200).send(users);
   } catch (err) {
-    return res.status(ERROR_SERVER_CODE).send({ message: 'An error has occurred on the server' });
+    return next(err);
   }
 };
 
-const getCurrentUser = async (req, res) => {
+const getCurrentUser = async (req, res, next) => {
   try {
     const user = await User.findById(req.user._id);
 
     if (!user) {
-      return res.status(NOT_FOUND_CODE).send({ message: 'This user does not exist' });
+      return next(new NotFoundError('This user does not exist'));
     }
     return res.status(200).send(user);
   } catch (err) {
     if (err.name === 'CastError') {
-      return res.status(ERROR_DATA_CODE).send({ message: 'Invalid user id' });
+      return next(new CastError('Invalid card id'));
     }
-    return res.status(ERROR_SERVER_CODE).send({ message: 'An error has occurred on the server' });
+    return next(err);
   }
 };
 
-const getUserById = async (req, res) => {
+const getUserById = async (req, res, next) => {
   try {
     const user = await User.findById(req.params.userId);
 
     if (!user) {
-      return res.status(NOT_FOUND_CODE).send({ message: 'This user does not exist' });
+      return next(new NotFoundError('This user does not exist'));
     }
     return res.status(200).send(user);
   } catch (err) {
     if (err.name === 'CastError') {
-      return res.status(ERROR_DATA_CODE).send({ message: 'Invalid user id' });
+      return next(new CastError('Invalid card id'));
     }
-    return res.status(ERROR_SERVER_CODE).send({ message: 'An error has occurred on the server' });
+    return next(err);
   }
 };
 
-const createUser = async (req, res) => {
+const createUser = async (req, res, next) => {
   const {
-    name, about, avatar, email, password,
+    email, password, name, about, avatar,
   } = req.body;
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await User.create({
-      name, about, avatar, email, password: hashedPassword,
+      email, password: hashedPassword, name, about, avatar,
     });
     return res.status(201).send(user);
   } catch (err) {
     if (err.name === 'ValidationError') {
-      return res.status(ERROR_DATA_CODE).send({ message: 'Validation error. Incorrect data sent' });
+      return next(new ValidationError('Validation error. Incorrect data sent'));
     }
-    return res.status(ERROR_SERVER_CODE).send({ message: 'An error has occurred on the server' });
+    if (err.code === 11000) {
+      return next(new ConflictError('Such an Email exists'));
+    }
+    return next(err);
   }
 };
 
-const updateProfile = async (req, res) => {
+const updateProfile = async (req, res, next) => {
   const { name, about } = req.body;
   try {
     const user = await User.findByIdAndUpdate(req.user._id, { name, about }, {
@@ -98,21 +101,21 @@ const updateProfile = async (req, res) => {
       runValidators: true,
     });
     if (!user) {
-      return res.status(NOT_FOUND_CODE).send({ message: 'This user does not exist' });
+      return next(new NotFoundError('This user does not exist'));
     }
     return res.status(200).send(user);
   } catch (err) {
     if (err.name === 'CastError') {
-      return res.status(ERROR_DATA_CODE).send({ message: 'Invalid user id' });
+      return next(new CastError('Invalid card id'));
     }
     if (err.name === 'ValidationError') {
-      return res.status(ERROR_DATA_CODE).send({ message: 'Validation error. Incorrect data sent' });
+      return next(new ValidationError('Validation error. Incorrect data sent'));
     }
-    return res.status(ERROR_SERVER_CODE).send({ message: 'An error has occurred on the server' });
+    return next(err);
   }
 };
 
-const updateAvatar = async (req, res) => {
+const updateAvatar = async (req, res, next) => {
   const { avatar } = req.body;
   try {
     const user = await User.findByIdAndUpdate(req.user._id, { avatar }, {
@@ -120,17 +123,17 @@ const updateAvatar = async (req, res) => {
       runValidators: true,
     });
     if (!user) {
-      return res.status(NOT_FOUND_CODE).send({ message: 'This user does not exist' });
+      return next(new NotFoundError('This user does not exist'));
     }
     return res.status(200).send(user);
   } catch (err) {
     if (err.name === 'CastError') {
-      return res.status(ERROR_DATA_CODE).send({ message: 'Invalid user id' });
+      return next(new CastError('Invalid card id'));
     }
     if (err.name === 'ValidationError') {
-      return res.status(ERROR_DATA_CODE).send({ message: 'Validation error. Incorrect data sent' });
+      return next(new ValidationError('Validation error. Incorrect data sent'));
     }
-    return res.status(ERROR_SERVER_CODE).send({ message: 'An error has occurred on the server' });
+    return next(err);
   }
 };
 

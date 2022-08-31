@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
+const error = require('./middlewares/error');
 const { NOT_FOUND_CODE } = require('./constants/constants');
 
 const { PORT = 3000 } = process.env;
@@ -36,3 +37,5 @@ app.use('/cards', auth, require('./routes/cards'));
 app.use('/*', (req, res) => {
   res.status(NOT_FOUND_CODE).send({ message: 'Page not found' });
 });
+
+app.use(error);
