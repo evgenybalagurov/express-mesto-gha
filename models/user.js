@@ -29,9 +29,13 @@ const userSchema = new mongoose.Schema({
   avatar: {
     type: String,
     default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
+    validate: {
+      validator(url) {
+        return /^(https?\/{2})?([w]{3}\.)?([\w-.~:/?#[\]@!$&')(*+,;=]+\.)+[\w]{2,8}(\/([\w-.~:/?#[\]@!$&')(*+,;=])*)?#?$/.test(url);
+      },
+      message: (props) => `${props.value} is not a valid link!`,
+    },
   },
 });
-
-// userSchema.index({ email: 1 }, { unique: true });
 
 module.exports = mongoose.model('user', userSchema);
