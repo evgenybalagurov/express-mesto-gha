@@ -37,7 +37,7 @@ const deleteCard = async (req, res, next) => {
     if (req.user._id !== card.owner.toString()) {
       return next(new AuthorizationError('This card is another user'));
     }
-    card.remove();
+    await card.remove();
     return res.status(200).send(card);
   } catch (err) {
     if (err.name === 'CastError') {
