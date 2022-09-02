@@ -1,6 +1,6 @@
 const { ERROR_SERVER_CODE } = require('../constants/constants');
 
-module.exports = (err, req, res, next) => {
+const errorHandler = (err, req, res, next) => {
   const { statusCode = ERROR_SERVER_CODE, message } = err;
 
   res
@@ -13,3 +13,5 @@ module.exports = (err, req, res, next) => {
 
   next();
 };
+
+module.exports = errorHandler;

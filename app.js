@@ -1,9 +1,14 @@
+require('dotenv').config();
+
 const express = require('express');
 const mongoose = require('mongoose');
 const { celebrate, Joi, errors } = require('celebrate');
+const cookieParser = require('cookie-parser');
+const usersRouter = require('./routes/users');
+const cardsRouter = require('./routes/cards');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
-const error = require('./middlewares/error');
+const errorHandler = require('./middlewares/error');
 const { NOT_FOUND_CODE } = require('./constants/constants');
 
 const { PORT = 3000 } = process.env;
@@ -28,6 +33,7 @@ const connect = async () => {
 connect();
 
 app.use(express.json());
+app.use(cookieParser());
 
 app.post('/signin', celebrate({
   body: Joi.object().keys({
@@ -45,8 +51,10 @@ app.post('/signup', celebrate({
   }),
 }), createUser);
 
-app.use('/users', auth, require('./routes/users'));
-app.use('/cards', auth, require('./routes/cards'));
+app.use(auth);
+
+app.use('/users', usersRouter);
+app.use('/cards', cardsRouter);
 
 app.use('/*', (req, res) => {
   res.status(NOT_FOUND_CODE).send({ message: 'Page not found' });
@@ -54,4 +62,4 @@ app.use('/*', (req, res) => {
 
 app.use(errors());
 
-app.use(error);
+app.use(errorHandler);

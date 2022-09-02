@@ -4,26 +4,25 @@ const validator = require('validator');
 const userSchema = new mongoose.Schema({
   email: {
     type: String,
-    required: true,
+    required: [true, 'Поле "email" должно быть заполнено'],
     validate: [validator.isEmail, 'Invalid email address'],
     unique: true,
   },
   password: {
     type: String,
-    required: true,
-    minlength: 8,
+    required: [true, 'Поле "password" должно быть заполнено'],
     select: false,
   },
   name: {
     type: String,
-    minlength: 2,
-    maxlength: 30,
+    minlength: [2, 'Минимальная длина поля "name" - 2'],
+    maxlength: [40, 'Максимальная длина поля "name" - 40'],
     default: 'Жак-Ив Кусто',
   },
   about: {
     type: String,
-    minlength: 2,
-    maxlength: 30,
+    minlength: [2, 'Минимальная длина поля "about" - 2'],
+    maxlength: [200, 'Максимальная длина поля "about" - 200'],
     default: 'Исследователь',
   },
   avatar: {
@@ -37,5 +36,13 @@ const userSchema = new mongoose.Schema({
     },
   },
 });
+
+userSchema.methods.toJSON = function deletePassword() {
+  const user = this.toObject();
+
+  delete user.password;
+
+  return user;
+};
 
 module.exports = mongoose.model('user', userSchema);
