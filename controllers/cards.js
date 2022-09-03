@@ -2,7 +2,7 @@ const Card = require('../models/card');
 const { ValidationError } = require('../errors/ValidationError');
 const { CastError } = require('../errors/CastError');
 const { NotFoundError } = require('../errors/NotFoundError');
-const { AuthorizationError } = require('../errors/AuthorizationError');
+const { ForbiddenError } = require('../errors/ForbiddenError');
 
 const getCards = async (req, res, next) => {
   try {
@@ -35,7 +35,7 @@ const deleteCard = async (req, res, next) => {
       return next(new NotFoundError('This card does not exist'));
     }
     if (req.user._id !== card.owner.toString()) {
-      return next(new AuthorizationError('This card is another user'));
+      return next(new ForbiddenError('This card is another user'));
     }
     await card.remove();
     return res.status(200).send(card);
