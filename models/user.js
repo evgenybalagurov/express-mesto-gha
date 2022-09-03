@@ -1,28 +1,29 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const { LINK_REGEX } = require('../constants/constants');
 
 const userSchema = new mongoose.Schema({
   email: {
     type: String,
-    required: [true, 'Поле "email" должно быть заполнено'],
+    required: [true, 'The field "email" must be filled'],
     validate: [validator.isEmail, 'Invalid email address'],
     unique: true,
   },
   password: {
     type: String,
-    required: [true, 'Поле "password" должно быть заполнено'],
+    required: [true, 'The field "password" must be filled'],
     select: false,
   },
   name: {
     type: String,
-    minlength: [2, 'Минимальная длина поля "name" - 2'],
-    maxlength: [40, 'Максимальная длина поля "name" - 40'],
+    minlength: [2, 'Minimum field length "name" - 2'],
+    maxlength: [40, 'Maximum field length "name" - 40'],
     default: 'Жак-Ив Кусто',
   },
   about: {
     type: String,
-    minlength: [2, 'Минимальная длина поля "about" - 2'],
-    maxlength: [200, 'Максимальная длина поля "about" - 200'],
+    minlength: [2, 'Minimum field length "about" - 2'],
+    maxlength: [200, 'Maximum field length "about" - 200'],
     default: 'Исследователь',
   },
   avatar: {
@@ -30,7 +31,7 @@ const userSchema = new mongoose.Schema({
     default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
     validate: {
       validator(url) {
-        return /^(https?\/{2})?([w]{3}\.)?([\w-.~:/?#[\]@!$&')(*+,;=]+\.)+[\w]{2,8}(\/([\w-.~:/?#[\]@!$&')(*+,;=])*)?#?$/.test(url);
+        return LINK_REGEX.test(url);
       },
       message: (props) => `${props.value} is not a valid link!`,
     },
