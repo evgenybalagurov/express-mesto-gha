@@ -21,7 +21,7 @@ const login = async (req, res, next) => {
     if (!matchedPasswords) {
       return next(new AuthorizationError('Incorrect email or password'));
     }
-    const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET);
+    const token = jwt.sign({ _id: user._id }, 'SECRET');
 
     return res.cookie('jwt', token, {
       maxAge: 3600000 * 24 * 7,
