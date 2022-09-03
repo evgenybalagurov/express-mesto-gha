@@ -5,14 +5,14 @@ const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const { errors } = require('celebrate');
 const router = require('./routes');
-const { NotFoundError } = require('./error/NotFoundError');
+const { NotFoundError } = require('./errors/NotFoundError');
 const errorHandler = require('./middlewares/errorHandler');
 
 const { PORT = 3000 } = process.env;
 
 const app = express();
 
-const connect = async () => {
+const connect = async (next) => {
   try {
     await mongoose.connect('mongodb://localhost:27017/mestodb', {
       useNewUrlParser: true,
@@ -23,7 +23,7 @@ const connect = async () => {
     await app.listen(PORT);
     console.log(`App listening on port ${PORT}`);
   } catch (err) {
-    console.log('Filed to connect:', err.message);
+    next(new Error('Filed to connect:', err.message));
   }
 };
 
@@ -34,7 +34,7 @@ app.use(cookieParser());
 
 app.use(router);
 
-app.use('/*', (req, res, next) => {
+app.use((req, res, next) => {
   next(new NotFoundError('Page not found'));
 });
 

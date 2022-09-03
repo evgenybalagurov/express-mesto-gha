@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 const { LINK_REGEX } = require('../constants/constants');
+const { UnauthorizedError } = require('../errors/UnauthorizedError');
 
 const userSchema = new mongoose.Schema({
   email: {
@@ -45,5 +46,19 @@ userSchema.methods.toJSON = function deletePassword() {
 
   return user;
 };
+
+userSchema
+  .statics
+  .findUserByCredentials = async function findUserByCredentials(email, password, next) {
+    const user = await this.findOne({ email }).select('+password');
+    if (!user) {
+      return next(new UnauthorizedError(wrongEmailOrPasswordMessage));
+    }
+    const isMatched = await bcrypt.compare(password, user.password);
+    if (!isMatched) {
+      return next(new UnauthorizedError(wrongEmailOrPasswordMessage));
+    }
+    return user;
+  };
 
 module.exports = mongoose.model('user', userSchema);

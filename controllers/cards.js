@@ -1,8 +1,8 @@
 const Card = require('../models/card');
-const { ValidationError } = require('../error/ValidationError');
-const { CastError } = require('../error/CastError');
-const { NotFoundError } = require('../error/NotFoundError');
-const { AuthorizationError } = require('../error/AuthorizationError');
+const { ValidationError } = require('../errors/ValidationError');
+const { CastError } = require('../errors/CastError');
+const { NotFoundError } = require('../errors/NotFoundError');
+const { AuthorizationError } = require('../errors/AuthorizationError');
 
 const getCards = async (req, res, next) => {
   try {
