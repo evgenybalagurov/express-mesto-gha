@@ -17,13 +17,13 @@ const userSchema = new mongoose.Schema({
   name: {
     type: String,
     minlength: [2, 'Minimum field length "name" - 2'],
-    maxlength: [40, 'Maximum field length "name" - 40'],
+    maxlength: [30, 'Maximum field length "name" - 30'],
     default: 'Жак-Ив Кусто',
   },
   about: {
     type: String,
     minlength: [2, 'Minimum field length "about" - 2'],
-    maxlength: [200, 'Maximum field length "about" - 200'],
+    maxlength: [30, 'Maximum field length "about" - 30'],
     default: 'Исследователь',
   },
   avatar: {

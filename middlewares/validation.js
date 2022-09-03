@@ -10,8 +10,8 @@ const validateLogin = celebrate({
 
 const validateCreateUser = celebrate({
   body: Joi.object().keys({
-    name: Joi.string().min(2).max(40),
-    about: Joi.string().min(2).max(200),
+    name: Joi.string().min(2).max(30),
+    about: Joi.string().min(2).max(30),
     avatar: Joi.string().pattern(LINK_REGEX),
     email: Joi.string().required().email(),
     password: Joi.string().required().min(5).max(20),
