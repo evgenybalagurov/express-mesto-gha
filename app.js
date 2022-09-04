@@ -5,7 +5,6 @@ const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const { errors } = require('celebrate');
 const router = require('./routes');
-const { NotFoundError } = require('./errors/NotFoundError');
 const errorHandler = require('./middlewares/errorHandler');
 
 const { PORT = 3000 } = process.env;
@@ -33,10 +32,6 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use(router);
-
-app.use((req, res, next) => {
-  next(new NotFoundError('Page not found'));
-});
 
 app.use(errors());
 
