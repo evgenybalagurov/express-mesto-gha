@@ -4,7 +4,7 @@ const { LINK_REGEX } = require('../constants/constants');
 const validateLogin = celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
-    password: Joi.string().required().min(5),
+    password: Joi.string().required(),
   }),
 });
 
@@ -14,7 +14,7 @@ const validateCreateUser = celebrate({
     about: Joi.string().min(2).max(30),
     avatar: Joi.string().pattern(LINK_REGEX),
     email: Joi.string().required().email(),
-    password: Joi.string().required().min(5).max(20),
+    password: Joi.string().required(),
   }),
 });
 
