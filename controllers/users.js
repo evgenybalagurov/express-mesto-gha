@@ -27,7 +27,7 @@ const login = async (req, res, next) => {
       maxAge: 3600000 * 24 * 7,
       httpOnly: true,
       sameSite: true,
-    }).status(200).send(user.toJSON());
+    }).send(user.toJSON());
   } catch (err) {
     return next(err);
   }
@@ -36,7 +36,7 @@ const login = async (req, res, next) => {
 const getUsers = async (req, res, next) => {
   try {
     const users = await User.find({});
-    return res.status(200).send(users);
+    return res.send(users);
   } catch (err) {
     return next(err);
   }
@@ -49,7 +49,7 @@ const getCurrentUser = async (req, res, next) => {
     if (!user) {
       return next(new NotFoundError('This user does not exist'));
     }
-    return res.status(200).send(user);
+    return res.send(user);
   } catch (err) {
     if (err.name === 'CastError') {
       return next(new CastError('Invalid card id'));
@@ -65,7 +65,7 @@ const getUserById = async (req, res, next) => {
     if (!user) {
       return next(new NotFoundError('This user does not exist'));
     }
-    return res.status(200).send(user);
+    return res.send(user);
   } catch (err) {
     if (err.name === 'CastError') {
       return next(new CastError('Invalid card id'));
@@ -106,7 +106,7 @@ const updateProfile = async (req, res, next) => {
     if (!user) {
       return next(new NotFoundError('This user does not exist'));
     }
-    return res.status(200).send(user);
+    return res.send(user);
   } catch (err) {
     if (err.name === 'CastError') {
       return next(new CastError('Invalid card id'));
@@ -128,7 +128,7 @@ const updateAvatar = async (req, res, next) => {
     if (!user) {
       return next(new NotFoundError('This user does not exist'));
     }
-    return res.status(200).send(user);
+    return res.send(user);
   } catch (err) {
     if (err.name === 'CastError') {
       return next(new CastError('Invalid card id'));

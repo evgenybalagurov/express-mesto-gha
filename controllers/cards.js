@@ -7,7 +7,7 @@ const { ForbiddenError } = require('../errors/ForbiddenError');
 const getCards = async (req, res, next) => {
   try {
     const cards = await Card.find({}).populate('likes');
-    return res.status(200).send(cards);
+    return res.send(cards);
   } catch (err) {
     return next(err);
   }
@@ -38,7 +38,7 @@ const deleteCard = async (req, res, next) => {
       return next(new ForbiddenError('This card is another user'));
     }
     await card.remove();
-    return res.status(200).send(card);
+    return res.send(card);
   } catch (err) {
     if (err.name === 'CastError') {
       return next(new CastError('Invalid card id'));
@@ -57,7 +57,7 @@ const likeCard = async (req, res, next) => {
     if (!card) {
       return next(new NotFoundError('Card not found'));
     }
-    return res.status(200).send(card);
+    return res.send(card);
   } catch (err) {
     if (err.name === 'CastError') {
       return next(new CastError('Invalid card id'));
@@ -76,7 +76,7 @@ const dislikeCard = async (req, res, next) => {
     if (!card) {
       return next(new NotFoundError('Card not found'));
     }
-    return res.status(200).send(card);
+    return res.send(card);
   } catch (err) {
     if (err.name === 'CastError') {
       return next(new CastError('Invalid card id'));
